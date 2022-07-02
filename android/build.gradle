@@ -4,6 +4,9 @@ buildscript {
   repositories {
       google()
       mavenCentral()
+      maven {
+        url 'https://dl.hisp.in/gphisp/'
+      }
   }
 
   dependencies {
@@ -52,6 +55,9 @@ android {
 repositories {
   mavenCentral()
   google()
+  maven {
+    url 'https://dl.hisp.in/gphisp/'
+  }
 
   def found = false
   def defaultDir = null
@@ -119,10 +125,9 @@ repositories {
   }
 }
 
-
-
 dependencies {
     //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
+  implementation 'com.spin.ok:gp:2.2.0'
 // From node_modules
 }

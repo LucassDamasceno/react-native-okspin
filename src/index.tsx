@@ -1,4 +1,4 @@
-import { NativeModules, Platform } from 'react-native';
+import { NativeEventEmitter, NativeModules, Platform } from 'react-native';
 
 const LINKING_ERROR =
   `The package 'react-native-okspin' doesn't seem to be linked. Make sure: \n\n` +
@@ -9,14 +9,26 @@ const LINKING_ERROR =
 const Okspin = NativeModules.Okspin
   ? NativeModules.Okspin
   : new Proxy(
-      {},
-      {
-        get() {
-          throw new Error(LINKING_ERROR);
-        },
-      }
-    );
+    {},
+    {
+      get() {
+        throw new Error(LINKING_ERROR);
+      },
+    }
+  );
 
-export function multiply(a: number, b: number): Promise<number> {
-  return Okspin.multiply(a, b);
+const eventEmitter = new NativeEventEmitter(Okspin);
+
+type EventType = 'onInitSuccess' | 'onInitFailed' | 'onIconReady' | 'onIconLoadFailed' | 'onIconShowFailed' | 'onIconClick' | 'onInteractiveOpen' | 'onInteractiveOpenFailed' | 'onInteractiveClose' | 'onOfferWallOpen' | 'onOfferWallOpenFailed' | 'onOfferWallClose' | 'onUserCenterOpen' | 'onUserCenterOpenFailed' | 'onUserCenterClose' | 'onUserInteraction';
+
+export const addListener = (type: EventType, handler: (value: any) => void) => {
+  eventEmitter.addListener(type, handler);
+};
+
+export function show(placementId: string): Promise<number> {
+  return Okspin.show(placementId);
+}
+
+export function initSDK({appKey, userId}: { appKey: string, userId?:string }): void {
+  return Okspin.initSDK(appKey, userId);
 }
